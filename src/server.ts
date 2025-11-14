@@ -26,6 +26,10 @@ app.get("/" , (req:Request, res: Response) =>
 {
     res.send("Express + Typescript + MongoDB server running as expected!!!");
 });
+app.get("/hello" , (req:Request, res: Response) =>
+{
+    res.send("Hello World!");
+});
 
 //function to start the server
 const startServer = async () => 
@@ -33,7 +37,7 @@ const startServer = async () =>
     try
     {
         app.listen(port, () => {
-            console.log("Server is running");
+            console.log("Server is running on port:" + port);
         })
     }catch (error)
     {
