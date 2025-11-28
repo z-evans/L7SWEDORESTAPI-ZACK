@@ -9,12 +9,11 @@
     // See also https://aka.ms/tsconfig/module
     "module": "Commonjs",
     "target": "ES2020",
-    "types": [],
+    "types": ["jest", "node"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
   },
-  "include": ["src/**/*"] /* ensures only files in the src folder are compiled */
-
+  "include": ["src/**/*", "tests/**/*", "jest.config.ts"] /* ensures only files in the src folder are compiled */
 }
