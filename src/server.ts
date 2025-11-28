@@ -2,9 +2,10 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { notesTable } from './db/schema/users';
+import { notesTable } from './db/schema/notes';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+import { noteTagsTable } from './db/schema/notes';
 
 //load environment variables from .env files 
 dotenv.config();
@@ -38,8 +39,21 @@ app.get("/hello" , (req:Request, res: Response) =>
 
 app.get("/notes/:id", async (req: Request, res: Response) => {
     // Logic to fetch notes from the database
-    const notes = await db.select().from(notesTable).where(eq(notesTable.userId, Number(req.params.id)));
+    const notes = await db.select().from(notesTable)
+        .leftJoin(noteTagsTable, eq(notesTable.id, noteTagsTable.noteId))
+        .where(eq(notesTable.userId, Number(req.params.id)));
     res.json({ notes }); // Placeholder response
+});
+
+app.get("/notes/:id/:tag", async (req: Request, res: Response) => { 
+    const userId = Number(req.params.id);
+    const tag = req.params.tag;
+
+    const notes = await db.select().from(notesTable)
+        .leftJoin(noteTagsTable, eq(notesTable.id, noteTagsTable.noteId))
+        .where((and(eq(notesTable.userId, userId), eq(noteTagsTable.tag, tag))));
+
+    res.json({ notes });
 });
 
 //function to start the server
