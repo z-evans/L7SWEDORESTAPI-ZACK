@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import * as schema from "./schema/users"
+import * as schema from "./schema/schema";
 import { drizzle } from "drizzle-orm/node-postgres";
 import dotenv from 'dotenv';
 dotenv.config();

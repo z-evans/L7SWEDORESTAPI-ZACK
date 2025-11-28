@@ -2,7 +2,7 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { notesMapper } from './routes/notes';
+import { todosMapper } from './routes/todos';
 
 //load environment variables from .env files 
 dotenv.config();
@@ -32,7 +32,7 @@ app.get("/hello" , (req:Request, res: Response) =>
     res.send("Hello World!");
 });
 
-notesMapper(app);
+todosMapper(app);
 
 //function to start the server
 const startServer = async () => 
