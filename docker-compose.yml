@@ -1,0 +1,15 @@
+version: "3.0"
+services: 
+  postgres:
+    image: postgres:alpine
+    container_name: tdd-todo-app-postgres
+    ports: 
+      - "5432:5432"
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: lettuce123
+      POSTGRES_DB: tdd_todo_app
+    volumes:
+      - pgdata:/var/lib/postgresql/data 
+volumes:
+  pgdata:
