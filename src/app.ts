@@ -2,7 +2,7 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import todoRoutes from "./routes/todos";
+import todoRoutes from "./routes/todoroutes";
 
 //load environment variables from .env files
 dotenv.config();
