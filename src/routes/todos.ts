@@ -1,30 +1,58 @@
-import { Express, Request, Response } from 'express';
-import { eq, ilike } from 'drizzle-orm';
-import { db } from '../db/database';
-import { todos, todoTags } from '../db/schema/schema';
+import { Request, Response, Router } from "express";
+import {
+  createTodo,
+  deleteTodo,
+  getTodoById,
+  getTodos,
+  getTodosByTitle,
+  updateTodo,
+} from "../service/todoService";
 
-export const todosMapper = (app: Express) => {
-    app.get("/todos", async (req: Request, res: Response) => {
-        const todosList = await db.select().from(todos)
-            .leftJoin(todoTags, eq(todos.id, todoTags.todoId));
-        res.json({ todos: todosList });
-    });
-    app.get("/todos/search/:query", async (req: Request, res: Response) => {
-        const query = req.params.query;
-        
-        const todosList = await db.select().from(todos)
-            .leftJoin(todoTags, eq(todos.id, todoTags.todoId))
-            .where(ilike(todos.title, `%${query}%`));
+const router = Router();
 
-        res.json({ todos: todosList });
-    });
-    app.get("/todos/:tag", async (req: Request, res: Response) => { 
-        const tag = req.params.tag;
+router.get("/todos", async (req: Request, res: Response) => {
+  res.json(await getTodos());
+});
 
-        const todosList = await db.select().from(todos)
-            .leftJoin(todoTags, eq(todos.id, todoTags.todoId))
-            .where(eq(todoTags.tag, tag));
+router.get("/todos/:id", async (req: Request, res: Response) => {
+  const todoId = parseInt(req.params.id);
+  const todo = await getTodoById(todoId);
+  if (!todo) {
+    return res.status(404).json({ message: "Todo not found." });
+  }
+  res.json(todo);
+});
 
-        res.json({ todos: todosList });
-    });
-}
+router.get("/todos/search/:title", async (req: Request, res: Response) => {
+  const title = req.params.title;
+  const todos = await getTodosByTitle(title);
+  res.json(todos);
+});
+
+router.post("/todos", async (req: Request, res: Response) => {
+  const { title, description } = req.body;
+  const newTodo = await createTodo(title, description);
+  res.status(201).json(newTodo);
+});
+
+router.put("/todos/:id", async (req: Request, res: Response) => {
+  const todoId = parseInt(req.params.id);
+  const updatedTodo = await updateTodo(
+    todoId,
+    req.body.title,
+    req.body.description
+  );
+  if (!updatedTodo) {
+    return res.status(404).json({ message: "Todo not found." });
+  }
+  res.json(updatedTodo);
+});
+
+router.delete("/todos/:id", async (req: Request, res: Response) => {
+  const todoId = parseInt(req.params.id);
+  (await deleteTodo(todoId))
+    ? res.status(204).send()
+    : res.status(404).json({ message: "Todo not found." });
+});
+
+export default router;
