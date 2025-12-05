@@ -1,8 +1,8 @@
 import request from 'supertest';
 import app from '../src/app';
 
-import {pool} from '../src/db';
-import {db} from '../src/db';
+import {pool} from '../src/database';
+import {db} from '../src/database';
 import {todos} from '../src/db/schema/schema';
 
 import { sql} from 'drizzle-orm';
